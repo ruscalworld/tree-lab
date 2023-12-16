@@ -16,20 +16,11 @@ namespace tree {
         return root->left_child;
     }
 
-    void clear_right(node_t *right_node) {
-        if (!right_node) return;
-        if (!right_node->right_sibling) return;
-        if (right_node->right_sibling->mark == 0) return;
-
-        delete right_node->right_sibling;
-        right_node->right_sibling = nullptr;
-    }
-
     node_t *make_virtual_node() {
-        auto left_son = new node_t(0);
-        left_son->mark = 2;
-        left_son->size = 0;
-        return left_son;
+        auto left_child = new node_t(0);
+        left_child->mark = 2;
+        left_child->size = 0;
+        return left_child;
     }
 
     node_t *make_node(int root_value) {
@@ -56,11 +47,6 @@ namespace tree {
         q->left_child->right_sibling = actual_left(p);
         p->left_child = q;
 
-        clear_right(q->left_child->right_sibling);
-//        if (q->left_child->right_sibling) {
-//            q->left_child->right_sibling->right_sibling = nullptr;
-//        }
-
         p->size = q->size;
 
         // Пересчитываем размер поддерева с новым корнем и возвращаем его.
@@ -80,7 +66,7 @@ namespace tree {
         p->left_child->right_sibling = q->right_sibling;
 
         if (q->left_child->right_sibling) {
-            q->left_child->right_sibling->right_sibling = q->right_sibling;
+            p->left_child->right_sibling = q->right_sibling;
         }
 
         q->right_sibling = p->right_sibling;
@@ -151,40 +137,12 @@ namespace tree {
         return root;
     }
 
-    node_t *merge(node_t *left, node_t* right) {
+    node_t *merge(node_t *left, node_t *right) {
         if (!left || left->mark != 0) return right;
         if (!right || right->mark != 0) return left;
 
-//        if (left && left->mark != 0) {
-//            delete left;
-//            left = nullptr;
-//        }
-//
-//        if (right && right->mark != 0) {
-//            delete right;
-//            right = nullptr;
-//        }
-//
-//        if (!left) return right;
-//        if (!right) return left;
-
-//        if (rand() % (left->size + right->size) < left->size) {
-            left->left_child->right_sibling = merge(left->left_child->right_sibling, right);
-            update_size(left);
-            return left;
-//        } else {
-//            right->left_child = merge(left, right->left_child);
-//            if (!right->left_child) right->left_child = make_virtual_node();
-//            update_size(right);
-//            return right;
-//        }
-
-//        left->left_child = merge(left->left_child, right->left_child);
-//        left->right_sibling = merge(left->right_sibling, right->right_sibling);
-//
-//        if (!left->left_child) left->left_child = make_virtual_node();
-//
-//        update_size(left);
+        left->left_child->right_sibling = merge(left->left_child->right_sibling, right);
+        update_size(left);
         return left;
     }
 
